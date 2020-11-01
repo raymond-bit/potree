@@ -49,7 +49,7 @@
 		viewer.setPointBudget(1*1000*1000);
 		viewer.loadSettingsFromURL();
 		
-		viewer.setDescription("Point cloud courtesy of <a target='_blank' href='https://www.sigeom.ch/'>sigeom sa</a>");
+		viewer.setDescription("AGK - Bestandsimmobilien CDE");
 		
 		viewer.loadGUI(() => {
 			viewer.setLanguage('en');
@@ -58,22 +58,21 @@
 			//viewer.toggleSidebar();
 		});
 		
-		// Sigeom
-		Potree.loadPointCloud("../pointclouds/vol_total/cloud.js", "sigeom.sa", function(e){
-			let scene = viewer.scene;
-			scene.addPointCloud(e.pointcloud);
-			
-			let material = e.pointcloud.material;
-			material.size = 1;
-			material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
-
-			scene.view.position.set(589974.341, 231698.397, 986.146);
-			scene.view.lookAt(new THREE.Vector3(589851.587, 231428.213, 715.634));
-			// viewer.fitToScreen();
-		});
+        let url = "../pointclouds/potree_converted/pointclouds/janni/cloud.js";
+        Potree.loadPointCloud(url).then(e => {
+            let pointcloud = e.pointcloud;
+            let material = pointcloud.material;
+ 
+            material.activeAttributeName = "rgba";
+            material.minSize = 2;
+            material.pointSizeType = Potree.PointSizeType.ADAPTIVE;
+ 
+            viewer.scene.addPointCloud(pointcloud);
+            viewer.fitToScreen();
+        });
 		
 		var loader = new THREE.PLYLoader();
-		loader.load( Potree.resourcePath + "/models/stanford_bunny_reduced.ply", (geometry) => {
+		loader.load( Potree.resourcePath + "/models/model_walls.ply", (geometry) => {
 			geometry.computeVertexNormals();
 			
 			// place three instances of this bunny into the scene
@@ -82,68 +81,25 @@
 			{
 				let material = new THREE.MeshNormalMaterial();
 				mesh1 = new THREE.Mesh( geometry, material );
-				mesh1.position.set(589951.587, 231428.213, 710.634);
-				mesh1.scale.multiplyScalar(500);
-				mesh1.rotation.set(Math.PI / 2, Math.PI, 0)
+				mesh1.position.set(0, 0, 0);
+				mesh1.scale.multiplyScalar(1);
+				//mesh1.rotation.set(Math.PI / 2, Math.PI, 0)
 				viewer.scene.scene.add(mesh1);
 			}
-			
-			let mesh2;
-			{
-				let material = new THREE.MeshStandardMaterial( { 
-					color: 0x0055ff, 
-					flatShading: true,
-					metalness: 0.2} );
-				mesh2 = new THREE.Mesh( geometry, material );
-				mesh2.position.set(589851.587, 231348.213, 720.634);
-				mesh2.scale.multiplyScalar(500);
-				mesh2.rotation.set(Math.PI / 2, Math.PI, 0)
-				viewer.scene.scene.add(mesh2);
-			}
-			
-			let mesh3;
-			{
-				let material = new THREE.MeshPhysicalMaterial( {
-					color: 0x226666,
-					metalness: 0,
-					roughness: 0.5,
-					reflectivity: 1.0
-				} );
-				mesh3 = new THREE.Mesh( geometry, material );
-				mesh3.position.set(589751.587, 231428.213, 725.634);
-				mesh3.scale.multiplyScalar(500);
-				mesh3.rotation.set(Math.PI / 2, Math.PI, 0)
-				viewer.scene.scene.add(mesh3);
-			}
+
 
 			viewer.onGUILoaded(() => {
 				// Add entries to object list in sidebar
 				let tree = $(`#jstree_scene`);
 				let parentNode = "other";
 
-				let bunny1ID = tree.jstree('create_node', parentNode, { 
-						"text": "Bunny 1", 
+				let ifcModell = tree.jstree('create_node', parentNode, { 
+						"text": "ifcModell", 
 						"icon": `${Potree.resourcePath}/icons/triangle.svg`,
 						"data": mesh1
 					}, 
 					"last", false, false);
 				tree.jstree(mesh1.visible ? "check_node" : "uncheck_node", bunny1ID);
-
-				let bunny2ID = tree.jstree('create_node', parentNode, { 
-						"text": "Bunny 2", 
-						"icon": `${Potree.resourcePath}/icons/triangle.svg`,
-						"data": mesh2
-					}, 
-					"last", false, false);
-				tree.jstree(mesh2.visible ? "check_node" : "uncheck_node", bunny2ID);
-
-				let bunny3ID = tree.jstree('create_node', parentNode, { 
-						"text": "Bunny 3", 
-						"icon": `${Potree.resourcePath}/icons/triangle.svg`,
-						"data": mesh3
-					}, 
-					"last", false, false);
-				tree.jstree(mesh3.visible ? "check_node" : "uncheck_node", bunny3ID);
 			});
 			
 		});
@@ -163,13 +119,13 @@
 			};
 			let onError = function ( xhr ) {};
 
-			const texture = new THREE.TextureLoader().load(`${Potree.resourcePath}/textures/brick_pavement.jpg`);
+			//const texture = new THREE.TextureLoader().load(`${Potree.resourcePath}/textures/brick_pavement.jpg`);
 
-			texture.wrapS = THREE.RepeatWrapping;
-			texture.wrapT = THREE.RepeatWrapping;
+			//texture.wrapS = THREE.RepeatWrapping;
+			//texture.wrapT = THREE.RepeatWrapping;
 
-			let loader = new THREE.OBJLoader( manager );
-			loader.load(`${Potree.resourcePath}/models/stanford_bunny_reduced.obj`, function ( object ) {
+			/*let loader = new THREE.OBJLoader( manager );
+			loader.load(function ( object ) {
 				object.traverse( function ( child ) {
 					if ( child instanceof THREE.Mesh ) {
 						child.material.map = texture;
@@ -199,6 +155,7 @@
 				});
 
 			}, onProgress, onError );
+			*/
 		}
 
 		{ // LIGHTS
