@@ -31,3 +31,7 @@ libs/CesiumUnminified
 /pointclouds/morro_bay_converted
 /pointclouds/helimap_epalinges
 pointclouds/F
+pointclouds/potree_converted/pointclouds/janni/*
+pointclouds/potree_converted/libs/*
+pointclouds/potree_converted/janni.html
+examples/github.html
